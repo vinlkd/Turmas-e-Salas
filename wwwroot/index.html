@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#c8182c">
+  <title>Reserva de salas · SENAI</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <section id="login-screen" class="login-screen" aria-labelledby="login-title">
+    <div class="login-story"><a class="brand" href="/">SENAI</a><div><p class="eyebrow">ESPAÇOS QUE CONECTAM</p><h1>Um lugar para<br>cada aprendizado.</h1><p>Salas de aula, laboratórios, oficinas e auditórios. Organize os espaços e dê lugar às próximas ideias.</p><div class="login-shapes" aria-hidden="true"><span>▦</span><span>↗</span><span>▤</span></div></div><small>Sistema de gestão de espaços · Protótipo</small></div>
+    <div class="login-side"><div class="login-card"><p class="eyebrow">BEM-VINDO AO SENAI</p><h2 id="login-title">Acesse seu espaço.</h2><p class="login-description">Entre com sua conta de professor ou coordenação.</p>
+      <form id="login-form"><label class="field">E-mail<input id="login-email" type="email" autocomplete="username" required placeholder="seu.email@senai.br"></label><label class="field">Senha<input id="login-password" type="password" autocomplete="current-password" required placeholder="Sua senha"></label><button id="login-submit" class="button primary submit" type="submit">Entrar <span aria-hidden="true">→</span></button><p id="login-message" class="form-message" role="status" hidden></p></form>
+      <div id="demo-accounts" class="demo-accounts" hidden><span class="small-label">EXPERIMENTE O PROTÓTIPO LOCAL</span><p>Escolha uma conta de demonstração para preencher o login.</p><div><button class="button subtle" type="button" data-demo="admin">Coordenação</button><button class="button subtle" type="button" data-demo="professor">Professor</button></div></div>
+    </div></div>
+  </section>
+  <div id="app-shell" hidden>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="SENAI — início">SENAI</a>
+    <div class="workspace"><span class="workspace-icon" aria-hidden="true">▦</span><div>Gestão de espaços<small>Todos os ambientes do SENAI</small></div></div>
+    <span class="nav-label" id="profile-label">ESPAÇO DO PROFESSOR</span>
+    <nav aria-label="Menu principal">
+      <a class="nav-item active" href="#agenda"><span aria-hidden="true">▦</span> Agenda de reservas</a>
+      <a class="nav-item" href="#nova-reserva"><span aria-hidden="true">＋</span> Nova reserva</a>
+      <a class="nav-item" href="#salas"><span aria-hidden="true">▤</span> Nossas salas</a>
+      <a class="nav-item" href="#turmas"><span aria-hidden="true">▥</span> Turmas</a>
+      <a class="nav-item" href="#cadastros" data-admin hidden><span aria-hidden="true">＋</span> Cadastros</a>
+    </nav>
+    <div class="side-note"><span class="small-label">CADA ATIVIDADE, SEU ESPAÇO.</span><p>Os recursos certos para colocar o conhecimento em prática.</p><span class="side-line"></span></div>
+    <div class="side-footer">SENAI <span>•</span> Gestão de salas e turmas</div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar"><div><span class="breadcrumb">Gestão de espaços</span><span class="slash">/</span><strong>Reservas</strong></div><div class="user-menu"><span class="connection" id="connection">Conectando…</span><span id="user-name"></span><button class="button subtle" id="logout" type="button">Sair</button></div></header>
+    <main id="conteudo">
+      <div class="page-heading"><div><p class="eyebrow">PLANEJE SUA PRÓXIMA AULA</p><h1>O espaço para suas ideias.</h1><p>Organize suas atividades e encontre a sala certa para ensinar.</p></div><a class="button primary" href="#nova-reserva">＋ Nova reserva</a></div>
+      <div class="notice" id="notice" role="status" hidden></div>
+      <section class="stats" aria-label="Resumo das reservas">
+        <article class="stat"><div><span>Reservas no dia</span><strong id="total-dia">—</strong><small>Na data selecionada</small></div><span class="stat-icon" aria-hidden="true">▦</span></article>
+        <article class="stat"><div><span>Salas cadastradas</span><strong id="total-salas">—</strong><small>Espaços para suas atividades</small></div><span class="stat-icon" aria-hidden="true">▤</span></article>
+        <article class="stat"><div><span>Alto desempenho</span><strong id="total-potentes">—</strong><small>Para softwares que exigem mais</small></div><span class="stat-icon red-icon" aria-hidden="true">↗</span></article>
+      </section>
+      <section class="priority-banner"><div class="banner-icon" aria-hidden="true">✦</div><div><h2 id="banner-title">O espaço certo para cada turma.</h2><p id="banner-description">Reserve salas de aula, laboratórios, oficinas e auditórios. A coordenação pode cancelar reservas quando precisar reorganizar os espaços.</p></div><span class="banner-tag">GESTÃO DE SALAS E TURMAS</span></section>
+      <div class="content-grid">
+        <section class="panel agenda" id="agenda" aria-labelledby="agenda-title">
+          <div class="panel-heading"><div><p class="eyebrow">SEU PLANEJAMENTO</p><h2 id="agenda-title">Agenda de reservas</h2></div><button class="icon-button" id="refresh" type="button" title="Atualizar agenda" aria-label="Atualizar agenda">↻</button></div>
+          <div class="agenda-toolbar"><label class="date-filter"><span class="sr-only">Data da agenda</span><input type="date" id="agenda-date" required></label><button class="button subtle" id="today" type="button">Hoje</button><label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Buscar atividade, sala ou professor</span><input type="search" id="search" placeholder="Buscar na agenda"></label></div>
+          <label class="cancelled-filter"><input type="checkbox" id="show-cancelled"> Incluir reservas canceladas</label>
+          <div class="schedule-caption"><span id="day-label">Carregando agenda</span><span id="reservation-count">—</span></div>
+          <div id="reservations" class="reservations" aria-live="polite"><div class="empty"><span class="empty-icon" aria-hidden="true">▦</span><h3>Carregando sua agenda…</h3></div></div>
+          <div class="panel-footer"><span class="legend-dot"></span> Confirmada <span class="legend-dot amber"></span> Remanejada <span class="timezone" id="timezone"></span></div>
+        </section>
+        <section class="panel booking" id="nova-reserva" aria-labelledby="booking-title">
+          <div class="panel-heading"><div><p class="eyebrow">RESERVE SEU ESPAÇO</p><h2 id="booking-title">Nova reserva</h2></div><span class="form-number">01</span></div>
+          <form id="booking-form">
+            <fieldset id="booking-fields" disabled>
+              <label class="field">Responsável<select name="professorId" id="professor" required><option value="">Carregando responsáveis…</option></select></label>
+              <label class="field">Turma<select name="turmaId" id="class" required><option value="">Selecione uma turma</option></select></label>
+              <label class="field">Atividade<input name="atividade" id="activity" required maxlength="500" placeholder="Ex.: Modelagem no SolidWorks"></label>
+              <fieldset class="usage"><legend>Recursos da atividade</legend><div class="usage-options"><label><input type="radio" name="nivel" value="Leve" checked><span><strong>Uso comum</strong><small>Aulas e atividades gerais</small></span></label><label><input type="radio" name="nivel" value="Pesado"><span><strong>Uso intensivo</strong><small>CAD e simulações</small></span></label></div></fieldset>
+              <label class="field">Sala<select name="salaId" id="room" required><option value="">Selecione uma sala</option></select></label>
+              <label class="field">Data da atividade<input type="date" name="data" id="booking-date" required></label>
+              <div class="time-row"><label class="field">Início<input type="time" name="inicio" id="start" value="09:00" required></label><span aria-hidden="true">→</span><label class="field">Término<input type="time" name="fim" id="end" value="11:00" required></label></div>
+              <p class="form-hint" id="booking-hint">A disponibilidade da sala e da turma será verificada ao confirmar. A coordenação pode cancelar reservas.</p>
+              <button class="button primary submit" id="submit" type="submit">Confirmar reserva <span aria-hidden="true">→</span></button>
+            </fieldset>
+            <p id="form-message" class="form-message" role="status" hidden></p>
+          </form>
+        </section>
+      </div>
+      <section id="salas" class="rooms-section" aria-labelledby="rooms-title"><div class="section-heading"><div><p class="eyebrow">CONHEÇA OS ESPAÇOS</p><h2 id="rooms-title">Nossas salas</h2></div><span class="muted">Preparadas para aprender fazendo.</span></div><div id="rooms-list" class="rooms-list"><p class="muted">Carregando salas…</p></div></section>
+      <section id="turmas" class="rooms-section" aria-labelledby="classes-title"><div class="section-heading"><div><p class="eyebrow">QUEM OCUPA NOSSOS ESPAÇOS</p><h2 id="classes-title">Turmas cadastradas</h2></div></div><div id="classes-list" class="rooms-list"></div></section>
+      <section id="cadastros" class="rooms-section" data-admin hidden aria-labelledby="cadastros-title"><div class="section-heading"><div><p class="eyebrow">ÁREA DA COORDENAÇÃO</p><h2 id="cadastros-title">Cadastre e edite salas e turmas</h2></div></div><div class="admin-grid">
+        <section class="panel"><div class="panel-heading"><h3>Nova sala</h3></div><form id="room-form"><fieldset><label class="field">Nome da sala<input name="nome" required maxlength="100" placeholder="Ex.: Sala 202"></label><div class="form-columns"><label class="field">Tipo<select name="tipo"><option>Sala de aula</option><option>Informática</option><option>Laboratório</option><option>Oficina</option><option>Auditório</option><option>Outro</option></select></label><label class="field">Capacidade<input name="capacidade" type="number" min="1" max="1000" value="30" required></label></div><label class="field">Localização<input name="localizacao" maxlength="150" placeholder="Ex.: Bloco B, 2º andar"></label><label class="checkbox-field"><input name="altoDesempenho" type="checkbox"> Computadores de alto desempenho</label><button class="button primary submit" type="submit">Cadastrar sala <span aria-hidden="true">＋</span></button></fieldset><p id="room-message" class="form-message" role="status" hidden></p></form></section>
+        <section class="panel"><div class="panel-heading"><h3>Nova turma</h3></div><form id="class-form"><fieldset><label class="field">Nome ou código da turma<input name="nome" required maxlength="100" placeholder="Ex.: MEC 2026.2"></label><label class="field">Curso<input name="curso" required maxlength="150" placeholder="Ex.: Técnico em Mecânica"></label><div class="form-columns"><label class="field">Turno<select name="turno"><option>Manhã</option><option>Tarde</option><option>Noite</option><option>Integral</option></select></label><label class="field">Quantidade de alunos<input name="quantidadeAlunos" type="number" min="1" max="1000" value="30" required></label></div><button class="button primary submit" type="submit">Cadastrar turma <span aria-hidden="true">＋</span></button></fieldset><p id="class-message" class="form-message" role="status" hidden></p></form></section>
+      </div></section>
+      <footer class="footer"><span><strong>SENAI</strong> · Sistema de reserva de salas</span><span>Tecnologia a serviço da educação.</span></footer>
+    </main>
+  </div>
+  </div>
+  <dialog id="cancel-dialog" aria-labelledby="cancel-title"><form id="cancel-form"><h2 id="cancel-title">Cancelar reserva</h2><p id="cancel-description"></p><label class="field">Motivo do cancelamento<textarea id="cancel-reason" required minlength="3" maxlength="500" rows="3" placeholder="Explique por que o espaço precisa ser liberado"></textarea></label><p class="form-hint">A reserva ficará no histórico e o horário será liberado para um novo agendamento.</p><div class="dialog-actions"><button class="button subtle" id="cancel-close" type="button">Voltar</button><button class="button primary" id="cancel-confirm" type="submit">Cancelar reserva</button></div><p id="cancel-message" class="form-message" role="status" hidden></p></form></dialog>
+</body>
+</html>

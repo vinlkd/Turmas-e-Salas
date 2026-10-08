@@ -1,0 +1,35 @@
+﻿@Salas_HostAddress = http://localhost:5008
+# Mantenha os cookies entre as chamadas. Copie csrfToken da resposta de /auth/sessao.
+@csrfToken = COLE_O_TOKEN_DA_SESSAO
+
+GET {{Salas_HostAddress}}/auth/sessao
+
+### Login de demonstração
+POST {{Salas_HostAddress}}/auth/login
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{
+  "email": "admin@senai.demo",
+  "senha": "Admin@123"
+}
+
+### Consulte a sessão após o login e atualize csrfToken
+GET {{Salas_HostAddress}}/auth/sessao
+
+### Agenda
+GET {{Salas_HostAddress}}/reservas
+
+### Nova reserva
+POST {{Salas_HostAddress}}/reservas
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{
+  "salaId": "sala-101",
+  "turmaId": "dev-2026",
+  "atividade": "Aula de programação",
+  "nivel": "Leve",
+  "inicio": "2026-10-09T09:00:00-03:00",
+  "fim": "2026-10-09T11:00:00-03:00"
+}

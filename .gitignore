@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+App_Data/
+firebase-key.json
+*-firebase-adminsdk-*.json
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
