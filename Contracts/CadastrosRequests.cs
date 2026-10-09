@@ -8,6 +8,20 @@ public class LoginRequest
     [Required, StringLength(100)] public string Senha { get; set; } = "";
 }
 
+public class EditarContaRequest : IValidatableObject
+{
+    [Required, StringLength(100)] public string Nome { get; set; } = "";
+    [Required, EmailAddress, StringLength(254)] public string Email { get; set; } = "";
+    [StringLength(100)] public string? SenhaAtual { get; set; }
+    [StringLength(72, MinimumLength = 8)] public string? NovaSenha { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (NovaSenha is not null && System.Text.Encoding.UTF8.GetByteCount(NovaSenha) > 72)
+            yield return new ValidationResult("A nova senha deve ter no máximo 72 bytes.", [nameof(NovaSenha)]);
+    }
+}
+
 public class CriarSalaRequest
 {
     [Required, StringLength(100)] public string Nome { get; set; } = "";

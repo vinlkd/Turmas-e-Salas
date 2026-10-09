@@ -277,6 +277,8 @@ function showLogin() {
   $('login-screen').hidden = false;
   $('booking-fields').disabled = true;
   if ($('cancel-dialog').open) $('cancel-dialog').close();
+  if ($('account-dialog').open) $('account-dialog').close();
+  $('account-form').reset();
   ['room-form', 'class-form'].forEach(id => {
     resetEdit(id);
     $(id === 'room-form' ? 'room-message' : 'class-message').hidden = true;
@@ -335,6 +337,61 @@ $('logout').addEventListener('click', async () => {
     await session();
   } catch (error) { $('notice').textContent = error.message; $('notice').hidden = false; }
   finally { $('logout').disabled = false; }
+});
+
+let accountSaving = false;
+$('account').addEventListener('click', async () => {
+  const usuarioId = state.usuario?.id;
+  if (!usuarioId) return;
+  $('account-form').reset();
+  $('account-profile').textContent = isAdmin() ? 'Coordenação · edite seus dados de acesso' : 'Professor · edite seus dados de acesso';
+  $('account-fields').disabled = true;
+  $('account-message').textContent = 'Carregando seus dados…';
+  $('account-message').hidden = false;
+  $('account-dialog').showModal();
+  try {
+    const account = await api('/auth/conta');
+    if (!$('account-dialog').open || state.usuario?.id !== usuarioId) return;
+    $('account-name').value = account.nome;
+    $('account-email').value = account.email;
+    $('account-message').hidden = true;
+    $('account-fields').disabled = false;
+    $('account-name').focus();
+  } catch (error) { $('account-message').textContent = error.message; }
+});
+$('account-close').addEventListener('click', () => $('account-dialog').close());
+$('account-dialog').addEventListener('cancel', event => { if (accountSaving) event.preventDefault(); });
+$('account-dialog').addEventListener('close', () => $('account-form').reset());
+$('account-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (accountSaving) return;
+  const novaSenha = $('account-new-password').value;
+  const confirmacao = $('account-confirm-password').value;
+  if (novaSenha !== confirmacao) {
+    $('account-message').textContent = 'A confirmação deve ser igual à nova senha.';
+    $('account-message').hidden = false;
+    $('account-confirm-password').focus();
+    return;
+  }
+  const payload = { nome: $('account-name').value.trim(), email: $('account-email').value.trim(),
+    senhaAtual: $('account-current-password').value || null, novaSenha: novaSenha || null };
+  accountSaving = true;
+  $('account-fields').disabled = true;
+  $('account-save').textContent = 'Salvando…';
+  $('account-message').hidden = true;
+  try {
+    await api('/auth/conta', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    // A nova identidade precisa de um novo token CSRF após a alteração do nome.
+    await session();
+    $('account-dialog').close();
+    $('notice').textContent = 'Seus dados foram atualizados com sucesso.';
+    $('notice').hidden = false;
+  } catch (error) { $('account-message').textContent = error.message; $('account-message').hidden = false; }
+  finally {
+    accountSaving = false;
+    $('account-fields').disabled = false;
+    $('account-save').textContent = 'Salvar alterações';
+  }
 });
 
 function resetEdit(id) {

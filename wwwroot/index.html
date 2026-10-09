@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#2563b5">
   <title>Reserva de salas · SENAI</title>
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/app.js" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20261009-conta">
+  <script src="/app.js?v=20261009-conta" defer></script>
 </head>
 <body>
   <section id="login-screen" class="login-screen" aria-labelledby="login-title">
@@ -29,11 +29,10 @@
       <a class="nav-item" href="#turmas"><span aria-hidden="true">▥</span> Turmas</a>
       <a class="nav-item" href="#cadastros" data-admin hidden><span aria-hidden="true">＋</span> Cadastros</a>
     </nav>
-    <div class="side-note"><span class="small-label">CADA ATIVIDADE, SEU ESPAÇO.</span><p>Os recursos certos para colocar o conhecimento em prática.</p><span class="side-line"></span></div>
-    <div class="side-footer">SENAI <span>•</span> Gestão de salas e turmas</div>
+    <div class="account-links" aria-label="Conta e sessão"><button id="account" type="button">Conta</button><span aria-hidden="true">|</span><button id="logout" type="button">Sair</button></div>
   </aside>
   <div class="main-shell">
-    <header class="topbar"><div><span class="breadcrumb">Gestão de espaços</span><span class="slash">/</span><strong>Reservas</strong></div><div class="user-menu"><span class="connection" id="connection">Conectando…</span><span id="user-name"></span><button class="button subtle" id="logout" type="button">Sair</button></div></header>
+    <header class="topbar"><div><span class="breadcrumb">Gestão de espaços</span><span class="slash">/</span><strong>Reservas</strong></div><div class="user-menu"><span class="connection" id="connection">Conectando…</span><span id="user-name"></span></div></header>
     <main id="conteudo">
       <div class="page-heading"><div><p class="eyebrow">PLANEJE SUA PRÓXIMA AULA</p><h1>O espaço para suas ideias.</h1><p>Organize suas atividades e encontre a sala certa para ensinar.</p></div><a class="button primary" href="#nova-reserva">＋ Nova reserva</a></div>
       <div class="notice" id="notice" role="status" hidden></div>
@@ -81,5 +80,6 @@
   </div>
   </div>
   <dialog id="cancel-dialog" aria-labelledby="cancel-title"><form id="cancel-form"><h2 id="cancel-title">Cancelar reserva</h2><p id="cancel-description"></p><label class="field">Motivo do cancelamento<textarea id="cancel-reason" required minlength="3" maxlength="500" rows="3" placeholder="Explique por que o espaço precisa ser liberado"></textarea></label><p class="form-hint">A reserva ficará no histórico e o horário será liberado para um novo agendamento.</p><div class="dialog-actions"><button class="button subtle" id="cancel-close" type="button">Voltar</button><button class="button primary" id="cancel-confirm" type="submit">Cancelar reserva</button></div><p id="cancel-message" class="form-message" role="status" hidden></p></form></dialog>
+  <dialog id="account-dialog" aria-labelledby="account-title"><form id="account-form"><p class="eyebrow">SEUS DADOS</p><h2 id="account-title">Minha conta</h2><p class="account-description" id="account-profile"></p><fieldset id="account-fields"><label class="field">Nome<input id="account-name" name="nome" required maxlength="100" autocomplete="name"></label><label class="field">E-mail<input id="account-email" name="email" type="email" required maxlength="254" autocomplete="email"></label><label class="field">Senha atual<input id="account-current-password" type="password" autocomplete="current-password" maxlength="100" aria-describedby="account-password-hint"></label><p id="account-password-hint" class="form-hint">Informe sua senha atual para alterar o e-mail ou a senha. Para mudar apenas o nome, esse campo pode ficar vazio.</p><label class="field">Nova senha <span class="optional">Opcional</span><input id="account-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="72" placeholder="Deixe vazio para manter a senha"></label><label class="field">Confirmar nova senha<input id="account-confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="72"></label><div class="dialog-actions"><button class="button subtle" id="account-close" type="button">Voltar</button><button class="button primary" id="account-save" type="submit">Salvar alterações</button></div></fieldset><p id="account-message" class="form-message" role="status" hidden></p></form></dialog>
 </body>
 </html>

@@ -25,6 +25,8 @@ Os dados locais ficam em `App_Data/demo.json`, fora dos arquivos públicos e ign
 
 ## Perfis e funcionalidades
 
+O menu **Conta | Sair** permite editar os próprios dados ou encerrar a sessão. Professores e coordenação podem atualizar nome, e-mail e senha. A senha atual é obrigatória para alterar o e-mail ou a senha; mudar apenas o nome não exige nova confirmação. O perfil de acesso e o ID da conta são preservados. O novo e-mail e a nova senha passam a valer no próximo login.
+
 - **Professor:** consulta a agenda e as turmas, faz reservas em seu próprio nome para turmas cadastradas. Não cadastra salas ou turmas e não cancela reservas.
 - **Coordenação / Admin:** cadastra e edita salas e turmas, reserva qualquer tipo de sala para qualquer turma cadastrada e escolhe o responsável. Pode cancelar reservas, inclusive as feitas pelos professores.
 - Use **Editar sala** ou **Editar turma** nos cartões para carregar os dados no formulário. **Salvar alterações** atualiza o cadastro; **Cancelar edição** descarta o preenchimento. Os IDs são preservados, mantendo os vínculos com as reservas.
@@ -43,6 +45,7 @@ Os dados locais ficam em `App_Data/demo.json`, fora dos arquivos públicos e ign
 | GET | /auth/sessao | Público; retorna sessão e token CSRF |
 | POST | /auth/login | Público; e-mail e senha |
 | POST | /auth/logout | Autenticado |
+| GET / PUT | /auth/conta | Autenticado; consulta ou edita somente a própria conta |
 | GET | /salas, /turmas, /professores, /reservas | Autenticado |
 | POST | /salas, /turmas | Admin |
 | PUT | /salas/{id}, /turmas/{id} | Admin; mesmos campos do cadastro |
