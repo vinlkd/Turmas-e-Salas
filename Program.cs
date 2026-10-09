@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddScoped<ReservaService>();
+builder.Services.AddSingleton(TimeProvider.System);
 var demonstracao = builder.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("Demo:Enabled");
 builder.Services.AddSingleton(new ModoAplicacao(demonstracao));
 builder.Services.AddAntiforgery(options =>

@@ -4,7 +4,7 @@ using Salas_Elvis.Models;
 
 namespace Salas_Elvis.Services;
 
-public class ReservaService(IEscolaStore store)
+public class ReservaService(IEscolaStore store, TimeProvider timeProvider)
 {
     public Task<IReadOnlyList<ReservaResponse>> ListarAsync(CancellationToken ct)
         => store.LerAsync<IReadOnlyList<ReservaResponse>>(dados => dados.Reservas
@@ -55,6 +55,9 @@ public class ReservaService(IEscolaStore store)
                 ?? throw new ReservaException(404, "Reserva não encontrada.");
             if (reserva.Status == "Cancelada")
                 throw new ReservaException(409, "Essa reserva já foi cancelada.");
+            var limiteCancelamento = reserva.Inicio.ToDateTimeOffset().AddMinutes(-30);
+            if (timeProvider.GetUtcNow() > limiteCancelamento)
+                throw new ReservaException(409, "O prazo para cancelar essa reserva já terminou. O cancelamento só pode ser feito até 30 minutos antes do início.");
             reserva.Status = "Cancelada";
             reserva.CanceladoPorId = usuarioId;
             reserva.CanceladoEm = Timestamp.GetCurrentTimestamp();

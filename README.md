@@ -29,6 +29,8 @@ Os dados locais ficam em `App_Data/demo.json`, fora dos arquivos públicos e ign
 - **Coordenação / Admin:** cadastra e edita salas e turmas, reserva qualquer tipo de sala para qualquer turma cadastrada e escolhe o responsável. Pode cancelar reservas, inclusive as feitas pelos professores.
 - Use **Editar sala** ou **Editar turma** nos cartões para carregar os dados no formulário. **Salvar alterações** atualiza o cadastro; **Cancelar edição** descarta o preenchimento. Os IDs são preservados, mantendo os vínculos com as reservas.
 - O cancelamento libera o horário da sala e da turma. O registro continua no histórico com motivo, autor e data. Ative “Incluir reservas canceladas” para consultá-lo.
+- A coordenação só pode cancelar uma reserva até 30 minutos antes do início. Quando esse limite passa, a ação é bloqueada também pela API, mesmo que alguém tente chamar o endpoint diretamente.
+- Durante o intervalo entre o início e o fim, a agenda identifica a reserva como **Reserva em andamento**. O status é calculado no momento da consulta e volta a ser exibido normalmente depois do término.
 - Uma turma não pode ter duas reservas simultâneas. Um conflito de sala não é ignorado pelo administrador: ele pode cancelar a reserva anterior e fazer outra.
 - Professores continuam sujeitos à regra de uso intensivo para salas marcadas como alto desempenho. A coordenação pode usar essas salas também em atividades comuns.
 - A prioridade existente para uso intensivo permite remanejar reservas comuns apenas para espaços do mesmo tipo, disponíveis durante todo o período e com capacidade igual ou superior à sala original. Se não houver alternativa, retorna conflito sem alterar os dados.

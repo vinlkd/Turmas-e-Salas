@@ -12,6 +12,11 @@ const localDate = value => {
   const date = new Date(value);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 };
+const isInProgress = reserva => reserva.status !== 'Cancelada'
+  && Date.now() >= new Date(reserva.inicio).getTime()
+  && Date.now() < new Date(reserva.fim).getTime();
+const canCancel = reserva => isAdmin() && reserva.status !== 'Cancelada'
+  && Date.now() <= new Date(reserva.inicio).getTime() - 30 * 60 * 1000;
 const element = (tag, className, text) => {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -105,22 +110,26 @@ function renderAgenda() {
   filtered.forEach(reserva => {
     const moved = reserva.status === 'Remanejada';
     const cancelled = reserva.status === 'Cancelada';
+    const inProgress = isInProgress(reserva);
     const row = element('article', 'reservation');
     const hours = element('div', 'reservation-time', time(reserva.inicio));
     hours.append(element('small', '', `até ${time(reserva.fim)}`));
     if (localDate(reserva.inicio) !== selected || localDate(reserva.fim) !== selected) {
       hours.append(element('small', '', `${new Date(reserva.inicio).toLocaleDateString('pt-BR')} a ${new Date(reserva.fim).toLocaleDateString('pt-BR')}`));
     }
-    const body = element('div', `reservation-body${cancelled ? ' cancelled' : moved ? ' moved' : ''}`);
+    const body = element('div', `reservation-body${cancelled ? ' cancelled' : moved ? ' moved' : inProgress ? ' in-progress' : ''}`);
     const head = element('div', 'reservation-head');
-    head.append(element('h3', '', reserva.atividade), element('span', `badge${cancelled ? ' cancelled' : moved ? ' moved' : ''}`, reserva.status));
+    const badgeText = cancelled ? 'Cancelada' : inProgress ? 'Reserva em andamento' : reserva.status;
+    head.append(element('h3', '', reserva.atividade), element('span', `badge${cancelled ? ' cancelled' : moved ? ' moved' : inProgress ? ' active' : ''}`, badgeText));
     body.append(head, element('p', '', `${roomName(reserva.salaId)} · ${className(reserva.turmaId)}`), element('p', '', teacherName(reserva.professorId)), element('span', 'usage-tag', reserva.nivel === 'Pesado' ? 'Uso intensivo' : 'Uso comum'));
     if (cancelled) body.append(element('p', 'cancel-reason', `Cancelada pela coordenação: ${reserva.motivoCancelamento}`));
-    if (isAdmin() && !cancelled) {
+    if (canCancel(reserva)) {
       const cancel = element('button', 'cancel-button', 'Cancelar reserva');
       cancel.type = 'button';
       cancel.addEventListener('click', () => openCancel(reserva));
       body.append(cancel);
+    } else if (isAdmin() && !cancelled && !inProgress) {
+      body.append(element('span', 'cancel-locked', 'Prazo de cancelamento encerrado'));
     }
     row.append(hours, body);
     list.append(row);

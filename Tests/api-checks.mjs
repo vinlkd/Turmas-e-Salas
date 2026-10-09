@@ -99,6 +99,16 @@ const savedClasses = status(await professor.request('/turmas'), 200, 'Turma edit
 assert.equal(savedClasses.find(t => t.id === turma.id).curso, editedClassBody.curso);
 const afterEdit = status(await admin.request('/reservas'), 200, 'Edição preserva vínculo das reservas');
 assert.ok(afterEdit.some(r => r.id === reserva.id && r.salaId === room.id && r.turmaId === turma.id));
+const startsSoon = new Date(Date.now() + 20 * 60 * 1000);
+const soonRequest = { salaId: room.id, turmaId: turma2.id, atividade: 'Reserva próxima do limite', nivel: 'Leve',
+  inicio: startsSoon.toISOString(), fim: new Date(startsSoon.getTime() + 60 * 60 * 1000).toISOString() };
+const soonReservation = status(await admin.request('/reservas', 'POST', soonRequest), 201, 'Reserva próxima do início é criada');
+status(await admin.request(`/reservas/${soonReservation.id}/cancelar`, 'POST', { motivo: 'Teste do limite de cancelamento' }), 409, 'Cancelamento é bloqueado com menos de 30 minutos');
+const startsLater = new Date(Date.now() + 100 * 60 * 1000);
+const laterRequest = { ...soonRequest, turmaId: turma.id, atividade: 'Reserva dentro do prazo',
+  inicio: startsLater.toISOString(), fim: new Date(startsLater.getTime() + 60 * 60 * 1000).toISOString() };
+const laterReservation = status(await admin.request('/reservas', 'POST', laterRequest), 201, 'Reserva com mais de 30 minutos é criada');
+status(await admin.request(`/reservas/${laterReservation.id}/cancelar`, 'POST', { motivo: 'Teste do prazo permitido' }), 200, 'Cancelamento é permitido com mais de 30 minutos');
 status(await admin.request('/auth/logout', 'POST'), 204, 'Logout encerra sessão');
 status(await admin.request('/salas'), 401, 'Sessão encerrada perde acesso');
 console.log(`${checks} verificações da API passaram.`);
